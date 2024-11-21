@@ -1,0 +1,168 @@
+java mini project 
+
+231801008 
+Allwin Joseph 
+
+Pet parent app
+
+-----------------------
+SOURCE CODE 
+
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Pet {
+    private String name;
+    private String species;
+    private String feedingTime;
+    private String careTime;
+
+    public Pet(String name, String species) {
+        this.name = name;
+        this.species = species;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getFeedingTime() {
+        return feedingTime;
+    }
+
+    public String getCareTime() {
+        return careTime;
+    }
+
+    public void setFeedingTime(String feedingTime) {
+        this.feedingTime = feedingTime;
+    }
+
+    public void setCareTime(String careTime) {
+        this.careTime = careTime;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + species + ")";
+    }
+}
+
+public class PetCareReminder {
+    private ArrayList<Pet> pets = new ArrayList<>();
+    private Scanner scanner = new Scanner(System.in);
+
+    public void addPet() {
+        System.out.println("Enter pet name:");
+        String name = scanner.nextLine();
+        System.out.println("Enter pet species:");
+        String species = scanner.nextLine();
+        pets.add(new Pet(name, species));
+        System.out.println("Pet " + name + " has been added.");
+    }
+
+    public void setFeedingTime() {
+        System.out.println("Enter pet name:");
+        String name = scanner.nextLine();
+        Pet pet = findPet(name);
+        if (pet != null) {
+            System.out.println("Enter feeding time (HH:MM in 24-hour format):");
+            String time = scanner.nextLine();
+            pet.setFeedingTime(time);
+            System.out.println("Feeding time for " + pet.getName() + " set to " + time + ".");
+        } else {
+            System.out.println("Pet not found.");
+        }
+    }
+
+    public void setCareTime() {
+        System.out.println("Enter pet name:");
+        String name = scanner.nextLine();
+        Pet pet = findPet(name);
+        if (pet != null) {
+            System.out.println("Enter care time (HH:MM in 24-hour format):");
+            String time = scanner.nextLine();
+            pet.setCareTime(time);
+            System.out.println("Care time for " + pet.getName() + " set to " + time + ".");
+        } else {
+            System.out.println("Pet not found.");
+        }
+    }
+
+    public void checkReminders() {
+        String currentTime = LocalTime.now().withSecond(0).withNano(0).toString();
+        boolean found = false;
+
+        for (Pet pet : pets) {
+            if (currentTime.equals(pet.getFeedingTime())) {
+                System.out.println("Reminder: It's time to feed " + pet + ".");
+                found = true;
+            }
+            if (currentTime.equals(pet.getCareTime())) {
+                System.out.println("Reminder: It's time to take care of " + pet + ".");
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No reminders at this time.");
+        }
+    }
+
+    private Pet findPet(String name) {
+        for (Pet pet : pets) {
+            if (pet.getName().equalsIgnoreCase(name)) {
+                return pet;
+            }
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        PetCareReminder reminderSystem = new PetCareReminder();
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+
+        while (true) {
+            System.out.println("\n--- Pet Feeding and Care Reminder ---");
+            System.out.println("1. Add Pet");
+            System.out.println("2. Set Feeding Time");
+            System.out.println("3. Set Care Time");
+            System.out.println("4. Check Reminders");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    reminderSystem.addPet();
+                    break;
+                case 2:
+                    reminderSystem.setFeedingTime();
+                    break;
+                case 3:
+                    reminderSystem.setCareTime();
+                    break;
+                case 4:
+                    reminderSystem.checkReminders();
+                    break;
+                case 5:
+                    System.out.println("Exiting the system. Goodbye!");
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+
+            // Simulate checking reminders every minute (in a real system, this would run in the background).
+            try {
+                Thread.sleep(1000); // Check reminders every second for demo purposes
+            } catch (InterruptedException e) {
+                System.out.println("Error in reminder check.");
+            }
+        }
+    }
+}
+
+
